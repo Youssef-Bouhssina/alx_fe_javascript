@@ -8,7 +8,6 @@ const quotes = [
     { text: "It always seems impossible until it's done.", author: "Nelson Mandela", category: "Achievement" },
 ];
 
-
 // Function to display a random quote
 function showRandomQuote() {
     const randomIndex = Math.floor(Math.random() * quotes.length);
@@ -23,6 +22,58 @@ function showRandomQuote() {
 }
 
 // Function to create and display a form for adding quotes
+function createAddQuoteForm() {
+    const form = document.createElement("form");
+    form.id = "addQuoteForm";
+
+    const textInput = document.createElement("input");
+    textInput.type = "text";
+    textInput.placeholder = "Enter the quote";
+    textInput.name = "quoteText";
+
+    const authorInput = document.createElement("input");
+    authorInput.type = "text";
+    authorInput.placeholder = "Enter the author";
+    authorInput.name = "quoteAuthor";
+
+    const categoryInput = document.createElement("input");
+    categoryInput.type = "text";
+    categoryInput.placeholder = "Enter the category";
+    categoryInput.name = "quoteCategory";
+
+    const submitButton = document.createElement("button");
+    submitButton.type = "submit";
+    submitButton.textContent = "Add Quote";
+
+    form.appendChild(textInput);
+    form.appendChild(authorInput);
+    form.appendChild(categoryInput);
+    form.appendChild(submitButton);
+
+    const quoteDisplay = document.getElementById("quoteDisplay");
+    quoteDisplay.appendChild(form);
+
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const quoteText = textInput.value;
+        const quoteAuthor = authorInput.value;
+        const quoteCategory = categoryInput.value;
+
+        if (quoteText && quoteAuthor && quoteCategory) {
+            const newQuote = { text: quoteText, author: quoteAuthor, category: quoteCategory };
+            quotes.push(newQuote);
+
+            // Remove the form and display the new quote
+            form.remove();
+            showRandomQuote();
+        }
+    });
+}
+
+// Show the form immediately when the page loads
+createAddQuoteForm();
+
 // Initial quote display
 showRandomQuote();
 
