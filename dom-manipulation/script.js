@@ -74,6 +74,22 @@ function createAddQuoteForm() {
     });
 }
 
+// Function to export quotes as a JSON file
+function exportQuotesAsJSON() {
+    const json = JSON.stringify(quotes, null, 2); // Pretty print with 2 spaces indentation
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "quotes.json"; // Filename for the download
+    a.click();
+
+    // Cleanup
+    URL.revokeObjectURL(url);
+}
+
+
 // Show the form immediately when the page loads
 createAddQuoteForm();
 
