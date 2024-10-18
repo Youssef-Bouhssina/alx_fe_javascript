@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Dynamic Quote Generator</title>
-    </head>
-    <body>
-        <h1>Dynamic Quote Generator</h1>
-        <div id="quoteDisplay"></div>
-        <button id="newQuote">Show New Quote</button>
-        <div>
-            <label for="newQuoteText"></label><input id="newQuoteText" type="text" placeholder="Enter a new quote"/>
-            <label for="newQuoteCategory"></label><input id="newQuoteCategory" type="text" placeholder="Enter quote category"/>
-            <button onclick="function addQuote() {}
-            addQuote()">Add Quote</button>
-        </div>
-        <script src="script.js"></script>
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <title>Dynamic Quote Generator</title>
+</head>
+<body>
+<h1>Dynamic Quote Generator</h1>
+<div id="quoteDisplay"></div>
+<button id="newQuote">Show New Quote</button>
+<div>
+    <label for="newQuoteText"></label>
+    <input id="newQuoteText" type="text" placeholder="Enter a new quote"/>
+    <label for="newQuoteAuthor"></label>
+    <input id="newQuoteAuthor" type="text" placeholder="Enter the author"/>
+    <label for="newQuoteCategory"></label>
+    <input id="newQuoteCategory" type="text" placeholder="Enter quote category"/>
+    <button id="addQuoteBtn">Add Quote</button>
+</div>
+<button id="exportQuotesBtn">Export Quotes as JSON</button>
+<script src="script.js"></script>
+</body>
 </html>
