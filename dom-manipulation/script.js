@@ -75,27 +75,18 @@ function createAddQuoteForm() {
 }
 
 function populateCategories() {
-    const categories = [...new Set(quotes.map(quote => quote.category))]; // Extract unique categories
-    const categoryDropdown = document.getElementById("categoryDropdown"); // Assuming this is your dropdown's ID
+    const categorySelect = document.getElementById("categoryFilter");
+    categorySelect.innerHTML = '<option value="all">All Categories</option>'; // Reset dropdown and keep "All Categories"
 
-    // Clear any existing options
-    categoryDropdown.innerHTML = "";
+    const uniqueCategories = [...new Set(quotes.map(quote => quote.category))]; // Extract unique categories
 
-    // Create a default "Select a category" option
-    const defaultOption = document.createElement("option");
-    defaultOption.text = "Select a category";
-    defaultOption.value = "";
-    categoryDropdown.appendChild(defaultOption);
-
-    // Populate dropdown with categories
-    categories.forEach(category => {
+    uniqueCategories.forEach(category => {
         const option = document.createElement("option");
-        option.text = category;
-        option.value = category;
-        categoryDropdown.appendChild(option);
+        option.value = category.toLowerCase(); // Set the option value
+        option.textContent = category;         // Set the visible text
+        categorySelect.appendChild(option);    // Append to the dropdown
     });
 }
-
 
 // Function to export quotes as a JSON file
 function exportQuotesAsJSON() {
