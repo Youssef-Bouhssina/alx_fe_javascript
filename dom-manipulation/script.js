@@ -73,18 +73,21 @@ function createAddQuoteForm() {
         }
     });
 }
-
+// Function to populate categories
+window.onload = function() {
+    populateCategories();
+};
 function populateCategories() {
     const categorySelect = document.getElementById("categoryFilter");
-    categorySelect.innerHTML = '<option value="all">All Categories</option>'; // Reset dropdown and keep "All Categories"
+    categorySelect.innerHTML = '<option value="all">All Categories</option>'; // Reset dropdown
 
-    const uniqueCategories = [...new Set(quotes.map(quote => quote.category))]; // Extract unique categories
+    const uniqueCategories = [...new Set(quotes.map(quote => quote.category))];
 
     uniqueCategories.forEach(category => {
         const option = document.createElement("option");
-        option.value = category.toLowerCase(); // Set the option value
-        option.textContent = category;         // Set the visible text
-        categorySelect.appendChild(option);    // Append to the dropdown
+        option.value = category.toLowerCase();
+        option.textContent = category;
+        categorySelect.appendChild(option);
     });
 }
 
