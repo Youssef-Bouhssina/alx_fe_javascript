@@ -1,5 +1,6 @@
 // Array of quote objects with "text", "author", and "category" properties
-const quotes = [
+const storedQuotes = localStorage.getItem("quotes");
+const quotes = storedQuotes ? JSON.parse(storedQuotes) : [
     { text: "The only way to do great work is to love what you do.", author: "Steve Jobs", category: "Motivation" },
     { text: "Success is not final, failure is not fatal: It is the courage to continue that counts.", author: "Winston Churchill", category: "Perseverance" },
     { text: "Happiness is not something ready-made. It comes from your own actions.", author: "Dalai Lama", category: "Happiness" },
@@ -63,6 +64,8 @@ function createAddQuoteForm() {
         if (quoteText && quoteAuthor && quoteCategory) {
             const newQuote = { text: quoteText, author: quoteAuthor, category: quoteCategory };
             quotes.push(newQuote);
+
+            localStorage.setItem("quotes", JSON.stringify(quotes));
 
             // Remove the form and display the new quote
             form.remove();
