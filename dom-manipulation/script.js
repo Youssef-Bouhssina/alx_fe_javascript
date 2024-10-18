@@ -73,10 +73,7 @@ function createAddQuoteForm() {
         }
     });
 }
-// Function to populate categories
-window.onload = function() {
-    populateCategories();
-};
+// Function to populate categories dynamically
 function populateCategories() {
     const categorySelect = document.getElementById("categoryFilter");
     categorySelect.innerHTML = '<option value="all">All Categories</option>'; // Reset dropdown
@@ -90,6 +87,46 @@ function populateCategories() {
         categorySelect.appendChild(option);
     });
 }
+
+// Function to filter quotes based on selected category
+function filterQuotes() {
+    const selectedCategory = document.getElementById("categoryFilter").value.toLowerCase(); // Get selected category
+
+    let filteredQuotes;
+    if (selectedCategory === "all") {
+        filteredQuotes = quotes; // Show all quotes if "all" is selected
+    } else {
+        filteredQuotes = quotes.filter(quote => quote.category.toLowerCase() === selectedCategory); // Filter by category
+    }
+
+    displayQuotes(filteredQuotes); // Display filtered quotes
+}
+
+// Function to display quotes
+function displayQuotes(quotesArray) {
+    const quoteDisplay = document.getElementById("quoteDisplay");
+    quoteDisplay.innerHTML = ""; // Clear current display
+
+    if (quotesArray.length === 0) {
+        quoteDisplay.innerHTML = "<p>No quotes available for this category.</p>"; // Display message if no quotes match
+        return;
+    }
+
+    quotesArray.forEach(quote => {
+        quoteDisplay.innerHTML += `
+            <p>"${quote.text}"</p>
+            <p>- ${quote.author}</p>
+            <p><em>Category: ${quote.category}</em></p>
+            <hr/>
+        `;
+    });
+}
+
+// Call populateCategories on page load to populate dropdown
+window.onload = function() {
+    populateCategories();
+};
+
 
 // Function to export quotes as a JSON file
 function exportQuotesAsJSON() {
