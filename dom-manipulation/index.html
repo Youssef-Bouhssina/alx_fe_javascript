@@ -8,6 +8,15 @@
 <h1>Dynamic Quote Generator</h1>
 <div id="quoteDisplay"></div>
 <button id="newQuote">Show New Quote</button>
+<select id="categoryFilter" onchange="filterQuotes()">
+    <option value="all">All Categories</option>
+    <option value="motivation">Motivation</option>
+    <option value="perseverance">Perseverance</option>
+    <option value="happiness">Happiness</option>
+    <option value="inspiration">Inspiration</option>
+    <option value="determination">Determination</option>
+    <option value="achievement">Achievement</option>
+</select>
 <div>
     <label for="newQuoteText"></label>
     <input id="newQuoteText" type="text" placeholder="Enter a new quote"/>
