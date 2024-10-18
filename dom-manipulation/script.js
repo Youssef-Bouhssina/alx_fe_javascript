@@ -74,6 +74,29 @@ function createAddQuoteForm() {
     });
 }
 
+function populateCategories() {
+    const categories = [...new Set(quotes.map(quote => quote.category))]; // Extract unique categories
+    const categoryDropdown = document.getElementById("categoryDropdown"); // Assuming this is your dropdown's ID
+
+    // Clear any existing options
+    categoryDropdown.innerHTML = "";
+
+    // Create a default "Select a category" option
+    const defaultOption = document.createElement("option");
+    defaultOption.text = "Select a category";
+    defaultOption.value = "";
+    categoryDropdown.appendChild(defaultOption);
+
+    // Populate dropdown with categories
+    categories.forEach(category => {
+        const option = document.createElement("option");
+        option.text = category;
+        option.value = category;
+        categoryDropdown.appendChild(option);
+    });
+}
+
+
 // Function to export quotes as a JSON file
 function exportQuotesAsJSON() {
     const json = JSON.stringify(quotes, null, 2); // Pretty print with 2 spaces indentation
