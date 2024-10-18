@@ -89,6 +89,31 @@ function exportQuotesAsJSON() {
     URL.revokeObjectURL(url);
 }
 
+function importQuotesFromJSON(event) {
+    const file = event.target.files[0]; // Get the selected file
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const importedQuotes = JSON.parse(e.target.result); // Parse the JSON file content
+
+            if (Array.isArray(importedQuotes)) {
+                quotes.push(...importedQuotes); // Append the imported quotes to the existing ones
+                localStorage.setItem("quotes", JSON.stringify(quotes)); // Save updated quotes to localStorage
+                showRandomQuote(); // Display a random quote from the updated array
+                alert("Quotes successfully imported!");
+            } else {
+                alert("Invalid JSON file format.");
+            }
+        } catch (error) {
+            alert("Error parsing the file. Please ensure it's a valid JSON.");
+        }
+    };
+
+    reader.readAsText(file); // Read the file as a text
+}
+
 
 // Show the form immediately when the page loads
 createAddQuoteForm();
