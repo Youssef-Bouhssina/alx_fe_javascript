@@ -178,15 +178,17 @@ async function fetchQuotesFromServer() {
     await syncQuotes(); // Call syncQuotes to update from server
 }
 
-// Function to check for conflicts
+// Function to check for conflicts (modified)
 function checkForConflicts(serverQuotes) {
     const updatedQuotes = [];
+    let hasConflicts = false; // Flag to track if conflicts exist
 
     serverQuotes.forEach(serverQuote => {
         const localQuote = quotes.find(quote => quote.text === serverQuote.text);
 
         if (localQuote) {
             // Conflict found
+            hasConflicts = true;
             showConflictNotification(serverQuote, localQuote);
         } else {
             updatedQuotes.push(serverQuote);
@@ -195,11 +197,19 @@ function checkForConflicts(serverQuotes) {
 
     // Update local quotes if no conflicts or resolved
     quotes = [...quotes, ...updatedQuotes];
+
+    if (hasConflicts) {
+        // Display conflict notification if conflicts exist
+        return;
+    }
+
+    // Display success notification if no conflicts and update UI
     displayQuotes(quotes);
-    populateCategories(); // Update categories dropdown
+    populateCategories();
+    showSuccessNotification();
 }
 
-// Function to show conflict notification and resolve options
+// Function to show conflict notification (existing)
 function showConflictNotification(serverQuote, localQuote) {
     const notification = document.getElementById("notification");
     notification.innerHTML = `
@@ -208,6 +218,15 @@ function showConflictNotification(serverQuote, localQuote) {
         <button onclick="resolveConflict('${localQuote.text}', 'keep')">Keep Local</button>
         <button onclick="resolveConflict('${localQuote.text}', 'update')">Update to Server</button>
     `;
+}
+
+// Function to show success notification (new)
+function showSuccessNotification() {
+    const notification = document.getElementById("notification");
+    notification.innerHTML = '<p>Quotes synced with server!</p>';
+    setTimeout(() => {
+        notification.innerHTML = ''; // Clear notification after a delay
+    }, 2000); // Timeout in milliseconds
 }
 
 // Function to resolve conflict based on user choice
@@ -260,3 +279,14 @@ async function postQuoteToServer(newQuote) {
 // Function to periodically sync quotes with the server
 function startSyncingQuotes() {
     setInterval(() => {
+        fetchQuotesFromServer();
+    }, 10000); // Sync every 10 seconds
+}
+
+// Initialize the app
+document.addEventListener("DOMContentLoaded", () => {
+    showRandomQuote();
+    createAddQuoteForm();
+    populateCategories();
+    startSyncingQuotes(); // Start syncing quotes with the server
+});
