@@ -168,6 +168,9 @@ async function syncQuotes() {
 
         // Check for conflicts and notify user
         checkForConflicts(serverQuotes);
+
+        // Notify user that quotes have been synced
+        showSyncNotification();
     } catch (error) {
         console.error("Error syncing quotes:", error);
     }
@@ -197,6 +200,17 @@ function checkForConflicts(serverQuotes) {
     quotes = [...quotes, ...updatedQuotes];
     displayQuotes(quotes);
     populateCategories(); // Update categories dropdown
+}
+
+// Function to show sync notification
+function showSyncNotification() {
+    const notification = document.getElementById("notification");
+    notification.innerHTML = `<p>Quotes synced with server!</p>`;
+
+    // Optionally, clear the notification after a few seconds
+    setTimeout(() => {
+        notification.innerHTML = '';
+    }, 3000); // Clear after 3 seconds
 }
 
 // Function to show conflict notification and resolve options
@@ -240,23 +254,4 @@ async function postQuoteToServer(newQuote) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                title: newQuote.text,
-                body: newQuote.author,
-                userId: 1 // Placeholder
-            })
-        });
-
-        const data = await response.json();
-        console.log("Quote posted to server:", data);
-        quotes.push(newQuote);
-        displayQuotes(quotes);
-        populateCategories(); // Update categories dropdown
-
-    } catch (error) {
-        console.error("Error posting quote to server:", error);
-    }
-}
-
-// Function to periodically sync quotes with the server
-function startSyncingQuotes() {
-    setInterval(() => {
+                title: new
