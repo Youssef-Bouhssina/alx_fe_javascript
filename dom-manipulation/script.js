@@ -160,17 +160,71 @@ async function fetchQuotesFromServer() {
         const response = await fetch(serverUrl);
         const data = await response.json();
 
-        quotes = data.slice(0, 5).map(post => ({
+        const serverQuotes = data.slice(0, 5).map(post => ({
             text: post.title,
             author: "Server Author",
             category: "Server Category"
         }));
 
-        displayQuotes(quotes);
-        populateCategories(); // Update categories dropdown
+        // Check for conflicts and notify user
+        checkForConflicts(serverQuotes);
+
     } catch (error) {
         console.error("Error fetching quotes from server:", error);
     }
+}
+
+// Function to check for conflicts
+function checkForConflicts(serverQuotes) {
+    const updatedQuotes = [];
+
+    serverQuotes.forEach(serverQuote => {
+        const localQuote = quotes.find(quote => quote.text === serverQuote.text);
+
+        if (localQuote) {
+            // Conflict found
+            showConflictNotification(serverQuote, localQuote);
+        } else {
+            updatedQuotes.push(serverQuote);
+        }
+    });
+
+    // Update local quotes if no conflicts or resolved
+    quotes = [...quotes, ...updatedQuotes];
+    displayQuotes(quotes);
+    populateCategories(); // Update categories dropdown
+}
+
+// Function to show conflict notification and resolve options
+function showConflictNotification(serverQuote, localQuote) {
+    const notification = document.getElementById("notification");
+    notification.innerHTML = `
+        <p>Conflict detected for quote: "${localQuote.text}"</p>
+        <p>Server Quote: "${serverQuote.text}"</p>
+        <button onclick="resolveConflict('${localQuote.text}', 'keep')">Keep Local</button>
+        <button onclick="resolveConflict('${localQuote.text}', 'update')">Update to Server</button>
+    `;
+}
+
+// Function to resolve conflict based on user choice
+function resolveConflict(quoteText, choice) {
+    const localQuote = quotes.find(quote => quote.text === quoteText);
+    const serverQuote = { text: "Updated Server Quote", author: "Server Author", category: "Server Category" }; // Mock server quote
+
+    if (choice === 'keep') {
+        // Keep local quote, do nothing
+        console.log("Kept local quote:", localQuote);
+    } else if (choice === 'update') {
+        // Update local quote with server quote
+        const index = quotes.indexOf(localQuote);
+        quotes[index] = serverQuote;
+        console.log("Updated to server quote:", serverQuote);
+    }
+
+    // Clear the notification after resolving
+    document.getElementById("notification").innerHTML = '';
+    displayQuotes(quotes);
+    populateCategories(); // Update categories dropdown
 }
 
 // Post a new quote to the server using async/await
@@ -190,29 +244,17 @@ async function postQuoteToServer(newQuote) {
 
         const data = await response.json();
         console.log("Quote posted to server:", data);
-
         quotes.push(newQuote);
         displayQuotes(quotes);
         populateCategories(); // Update categories dropdown
+
     } catch (error) {
         console.error("Error posting quote to server:", error);
     }
 }
 
-// Add quote and post to server
-function addQuote() {
-    const quoteText = document.getElementById("newQuoteText").value;
-    const quoteAuthor = document.getElementById("newQuoteAuthor").value;
-    const quoteCategory = document.getElementById("newQuoteCategory").value;
-
-    if (quoteText && quoteAuthor && quoteCategory) {
-        const newQuote = { text: quoteText, author: quoteAuthor, category: quoteCategory };
-        postQuoteToServer(newQuote);
-    }
-}
-
-// Periodically fetch quotes from the server
-function fetchQuotesPeriodically() {
+// Function to periodically fetch quotes from the server
+async function fetchQuotesPeriodically() {
     setInterval(async () => {
         console.log("Fetching updated quotes from the server...");
         await fetchQuotesFromServer();
@@ -220,18 +262,5 @@ function fetchQuotesPeriodically() {
 }
 
 // Initial data fetch and periodic updates
-window.onload = async function() {
-    await fetchQuotesFromServer();
-    populateCategories();
-    fetchQuotesPeriodically();
-};
-
-// Show the form immediately when the page loads
-createAddQuoteForm();
-
-// Initial quote display
-showRandomQuote();
-
-// Event listener for the "Show New Quote" button
-const newQuoteButton = document.getElementById("newQuote");
-newQuoteButton.addEventListener("click", showRandomQuote);
+window.onload = function() {
+    fetchQuotes
