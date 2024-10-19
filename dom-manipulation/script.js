@@ -154,8 +154,8 @@ function importFromJsonFile(event) {
 // Simulated server endpoint
 const serverUrl = "https://jsonplaceholder.typicode.com/posts";
 
-// Fetch quotes from the server using async/await
-async function fetchQuotesFromServer() {
+// Function to sync quotes between local and server
+async function syncQuotes() {
     try {
         const response = await fetch(serverUrl);
         const data = await response.json();
@@ -168,10 +168,14 @@ async function fetchQuotesFromServer() {
 
         // Check for conflicts and notify user
         checkForConflicts(serverQuotes);
-
     } catch (error) {
-        console.error("Error fetching quotes from server:", error);
+        console.error("Error syncing quotes:", error);
     }
+}
+
+// Function to fetch quotes from the server using async/await
+async function fetchQuotesFromServer() {
+    await syncQuotes(); // Call syncQuotes to update from server
 }
 
 // Function to check for conflicts
@@ -249,18 +253,4 @@ async function postQuoteToServer(newQuote) {
         populateCategories(); // Update categories dropdown
 
     } catch (error) {
-        console.error("Error posting quote to server:", error);
-    }
-}
-
-// Function to periodically fetch quotes from the server
-async function fetchQuotesPeriodically() {
-    setInterval(async () => {
-        console.log("Fetching updated quotes from the server...");
-        await fetchQuotesFromServer();
-    }, 10000); // Every 10 seconds
-}
-
-// Initial data fetch and periodic updates
-window.onload = function() {
-    fetchQuotes
+        console.error("
