@@ -173,6 +173,11 @@ async function syncQuotes() {
     }
 }
 
+// Function to fetch quotes from the server using async/await
+async function fetchQuotesFromServer() {
+    await syncQuotes(); // Call syncQuotes to update from server
+}
+
 // Function to check for conflicts
 function checkForConflicts(serverQuotes) {
     const updatedQuotes = [];
@@ -252,7 +257,6 @@ async function postQuoteToServer(newQuote) {
     }
 }
 
-// Function to periodically sync quotes from the server
+// Function to periodically sync quotes with the server
 function startSyncingQuotes() {
     setInterval(() => {
-
