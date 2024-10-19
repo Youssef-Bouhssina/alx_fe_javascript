@@ -116,9 +116,7 @@ function displayQuotes(quotesArray) {
         quoteDisplay.innerHTML += `
             <p>"${quote.text}"</p>
             <p>- ${quote.author}</p>
-            <p><em>Category: ${quote.category}</em></p>
-            <hr/>
-        `;
+            <p><em>Category: ${quote.category}</em></p>`;
     });
 }
 
@@ -153,6 +151,124 @@ function importFromJsonFile(event) {
     };
     fileReader.readAsText(event.target.files[0]);
 }
+
+// Simulated server endpoint
+const serverUrl = "https://jsonplaceholder.typicode.com/posts";
+
+// Fetch quotes from the server
+function fetchQuotesFromServer() {
+    fetch(serverUrl)
+        .then(response => response.json())
+        .then(data => {
+            quotes = data.slice(0, 5).map(post => ({
+                text: post.title,
+                author: "Server Author",
+                category: "Server Category"
+            }));
+
+            displayQuotes(quotes);
+            populateCategories(); // Update categories dropdown
+        })
+        .catch(error => console.error("Error fetching quotes from server:", error));
+}
+
+// Post a new quote to the server
+function postQuoteToServer(newQuote) {
+    fetch(serverUrl, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            title: newQuote.text,
+            body: newQuote.author,
+            userId: 1 // Placeholder
+        })
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Quote posted to server:", data);
+            quotes.push(newQuote);
+            displayQuotes(quotes);
+            populateCategories(); // Update categories dropdown
+        })
+        .catch(error => console.error("Error posting quote to server:", error));
+}
+
+// Add quote and post to server
+function addQuote() {
+    const quoteText = document.getElementById("newQuoteText").value;
+    const quoteAuthor = document.getElementById("newQuoteAuthor").value;
+    const quoteCategory = document.getElementById("newQuoteCategory").value;
+
+    if (quoteText && quoteAuthor && quoteCategory) {
+        const newQuote = { text: quoteText, author: quoteAuthor, category: quoteCategory };
+        postQuoteToServer(newQuote);
+    }
+}
+
+// Function to periodically fetch quotes from the server
+function fetchQuotesPeriodically() {
+    setInterval(() => {
+        console.log("Fetching updated quotes from the server...");
+        fetch(serverUrl)
+            .then(response => response.json())
+            .then(data => {
+                const updatedQuotes = data.slice(5, 10).map(post => ({
+                    text: post.title,
+                    author: "Updated Server Author",
+                    category: "Updated Category"
+                }));
+
+                quotes = updatedQuotes;
+                displayQuotes(quotes);
+                populateCategories(); // Update categories dropdown
+            })
+            .catch(error => console.error("Error fetching periodic updates:", error));
+    }, 10000); // Every 10 seconds
+}
+
+// Function to display quotes
+function displayQuotes(quotesArray) {
+    const quoteDisplay = document.getElementById("quoteDisplay");
+    quoteDisplay.innerHTML = ""; // Clear display
+
+    if (quotesArray.length === 0) {
+        quoteDisplay.innerHTML = "<p>No quotes available for this category.</p>";
+        return;
+    }
+
+    quotesArray.forEach(quote => {
+        quoteDisplay.innerHTML += `
+            <p>"${quote.text}"</p>
+            <p>- ${quote.author}</p>
+            <p><em>Category: ${quote.category}</em></p>
+            <hr/>
+        `;
+    });
+}
+
+// Populate categories dynamically
+function populateCategories() {
+    const categorySelect = document.getElementById("categoryFilter");
+    categorySelect.innerHTML = '<option value="all">All Categories</option>';
+
+    const uniqueCategories = [...new Set(quotes.map(quote => quote.category))];
+
+    uniqueCategories.forEach(category => {
+        const option = document.createElement("option");
+        option.value = category.toLowerCase();
+        option.textContent = category;
+        categorySelect.appendChild(option);
+    });
+}
+
+// Initial data fetch and periodic updates
+window.onload = function() {
+    fetchQuotesFromServer();
+    populateCategories();
+    fetchQuotesPeriodically();
+};
 
 // Show the form immediately when the page loads
 createAddQuoteForm();
